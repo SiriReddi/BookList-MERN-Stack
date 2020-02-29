@@ -6,6 +6,8 @@ const bodyParser = require("body-parser");
 
 const book = require("./routes/book");
 const app = express();
+const mongoose = require("mongoose");
+mongoose.Promise = require("bluebird");
 
 app.use(logger("dev"));
 app.use(bodyParser.json());
@@ -14,6 +16,13 @@ app.use(express.static(path.join(__dirname, "build")));
 
 app.use("/api/book", book);
 
+mongoose
+  .connect("mongodb://localhost/mern-crud", {
+    useMongoClient: true,
+    promiseLibrary: require("bluebird")
+  })
+  .then(() => console.log("connection succesful"))
+  .catch(err => console.error(err));
 //catch 404 and forward to error handling
 
 app.use(function(req, res, next) {
@@ -33,4 +42,4 @@ app.use(function(err, req, res, next) {
   res.render("error");
 });
 
-export default app;
+module.exports = app;
