@@ -1,26 +1,65 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import ReactDOM from "react-dom";
+import { Link } from "react-router-dom";
+import axios from "axios";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      books: []
+    };
+  }
+
+  componentDidMount() {
+    axios.get("/api/book").then(res => {
+      this.setState({ books: res.data });
+      console.log(this.state.books);
+    });
+  }
+
+  render() {
+    return (
+      <div className="container">
+        <div className="panel panel-default">
+          <div class="panel-heading">
+            <h3 className="panel-title">BOOK CATALOG</h3>
+          </div>
+          <div class="panel-body">
+            <h4>
+              <LINK to="/create">
+                <span
+                  class="glyphicon glyphicon-plus-sign"
+                  aria-hidden="true"
+                ></span>
+                Add Book
+              </LINK>
+            </h4>
+            <table class="table table-stripe">
+              <thead>
+                <tr>
+                  <th>ISBN</th>
+                  <th>Title</th>
+                  <th>Author</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.books.map(book => (
+                  <tr>
+                    <td>
+                      <Link to={`/show/${book._id}`}>{book.isbn}</Link>
+                    </td>
+                    <td>{book.title}</td>
+                    <td>{book.author}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 export default App;
